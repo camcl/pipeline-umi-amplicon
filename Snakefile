@@ -109,6 +109,8 @@ rule filter_reads:
     output:
         FQ = "{name}/read.filt.fastq.gz",
         STATS = "{name}/stats/reads_stats.txt"
+    container:
+    	"docker://nanozoo/filtlong"
     threads: 1
     shell:
         """
@@ -137,15 +139,31 @@ rule map_1d:
     params:
         read_number = subset_reads,
         minimap2_param = minimap2_param
+    container:
+    	"docker://hydragenetics/minimap2:2.26"
     output:
-        BAM = "{name}/align/1_d.bam",
-        BAI = "{name}/align/1_d.bam.bai"
+    	UBAM = temp("{name}/align/1_d.unsorted.bam")
     threads: 30
     shell:
         """
-        catfishq --max_n {params.read_number} {input.FQ} | minimap2 {params.minimap2_param} -t {threads} {input.REF} - | samtools sort -@ 5 -o {output.BAM} - && samtools index -@ {threads} {output.BAM}
-        rm {input.FQ} #because this is a copy now
+        minimap2 {params.minimap2_param} -t {threads} {input.REF} {input.FQ} > {output.UBAM}
         """
+        
+rule sort_index_mapped_1d:
+	input:
+		UBAM = "{name}/align/1_d.unsorted.bam",
+		REF = reference_fasta
+	container:
+		"docker://hydragenetics/samtools:1.21"
+	output:
+		BAM = "{name}/align/1_d.bam",
+		BAI = "{name}/align/1_d.bam.bai"
+	threads: 30
+	shell:
+		"""
+		samtools sort -@ 5 -o {output.BAM} {input.UBAM}
+		samtools index -@ {threads} {output.BAM}
+		"""
 
 # Split reads by amplicons
 rule split_reads:
@@ -171,6 +189,8 @@ rule map_consensus:
         REF = reference_fasta
     params:
         minimap2_param = minimap2_param
+    container:
+    	"docker://hydragenetics/minimap2:2.26"
     output:
         BAM = "{name}/align/{target}_{type}.bam",
         BAI = "{name}/align/{target}_{type}.bam.bai"
@@ -217,6 +237,8 @@ rule cluster:
         CENT = "{name}/clustering/{target}/clusters_centroid.fasta",
         CONS = "{name}/clustering/{target}/clusters_consensus.fasta",
         DIR = directory("{name}/clustering/{target}/vsearch_clusters")
+    container:
+    	"docker://tinalan/vsearch:2.28.1"
     params:
         min_length = min_length,
         max_length = max_length
@@ -232,6 +254,8 @@ rule cluster_consensus:
         CENT = "{name}/clustering_consensus/{target}/clusters_centroid.fasta",
         CONS = "{name}/clustering_consensus/{target}/clusters_consensus.fasta",
         DIR = directory("{name}/clustering_consensus/{target}/vsearch_clusters")
+    container:
+    	"docker://tinalan/vsearch:2.28.1"
     params:
         min_length = min_length,
         max_length = max_length

@@ -26,12 +26,13 @@ The following software packages must be installed prior to running:
 
 -  [miniconda3](https://conda.io/miniconda.html) - please refer to installation [instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 - [Apptainer](https://apptainer.org/) - please refer to installation [instructions](https://apptainer.org/docs/admin/1.3/installation.html#install-from-pre-built-packages). *The pipeline was tested and worked with a local installation of Apptainer version 1.3.2*.
+- a local installation of Python3.8.
 
-### Installation
+### Installation with a conda environment
 After installing miniconda3, install the pipeline as follows:
 ```bash
 # Get pipeline
-git clone https://github.com/nanoporetech/pipeline-umi-amplicon.git 
+git clone https://github.com/camcl/pipeline-umi-amplicon.git 
 # Change to directory
 cd pipeline-umi-amplicon
 # Create conda environment with all dependencies
@@ -45,6 +46,21 @@ cd lib && pip install . && cd ..
 snakemake -j 1 -pr --configfile config.yml --use-singularity --singularity-args=--cleanenv
 # Deactivate environment
 conda deactivate
+```
+
+### Installation with a Python3.8 virtual environment and containerized rules
+
+```
+# Get pipeline
+$ git clone https://github.com/camcl/pipeline-umi-amplicon.git 
+# Change to directory
+$ cd pipeline-umi-amplicon
+# Create virtual environment
+$ python3.8 -m venv umi-amplicon-venv
+$ source umi-amplicon-venv/bin/activate
+$ pip install -r requirements.txt 
+# Install python packages provided by pipeline-umi-amplicon
+$ cd lib && pip install . && cd ..
 ```
 
 ### Input

@@ -1,0 +1,3 @@
+catfishq
+snakemake
+pulp<2.8
