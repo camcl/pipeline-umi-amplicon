@@ -16,5 +16,6 @@ dependencies:
   - varscan
   - medaka
   - pip
+  - filtlong
   - pip:
     - catfishq
