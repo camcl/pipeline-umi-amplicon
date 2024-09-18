@@ -25,6 +25,7 @@ The pipeline performs the following steps:
 The following software packages must be installed prior to running:
 
 -  [miniconda3](https://conda.io/miniconda.html) - please refer to installation [instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
+- [Apptainer](https://apptainer.org/) - please refer to installation [instructions](https://apptainer.org/docs/admin/1.3/installation.html#install-from-pre-built-packages). *The pipeline was tested and worked with a local installation of Apptainer version 1.3.2*.
 
 ### Installation
 After installing miniconda3, install the pipeline as follows:
@@ -41,7 +42,7 @@ conda activate pipeline-umi-amplicon
 cd lib && pip install . && cd ..
 
 # To test if the installation was successful run
-snakemake -j 1 -pr --configfile config.yml
+snakemake -j 1 -pr --configfile config.yml --use-singularity --singularity-args=--cleanenv
 # Deactivate environment
 conda deactivate
 ```
@@ -78,7 +79,7 @@ After the a pipeline analysis has completed, the aligned reads can be found at `
 To run the pipeline with default settings invoke snakemake as follows.
 
 ```bash
-$ snakemake -j 30 reads --configfile config.yml
+$ snakemake -j 30 reads --configfile config.yml --use-singularity --singularity-args=--cleanenv
 ```
 
 `-j` specifies how many CPU cores will be used by the pipeline. `reads` is the default target (see Targets); this will run all steps required to produce aligned high accuracy consensus reads. Please see the example config files for the required parameters.

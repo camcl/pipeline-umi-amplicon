@@ -272,6 +272,8 @@ rule polish_clusters:
         F = "{name}/fasta/{target}_consensus.fasta"
     params:
         medaka_model = mm
+    container:
+    	"docker://ontresearch/medaka:v1.11.3"
     threads: 30
     shell:
         """
