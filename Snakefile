@@ -103,6 +103,7 @@ rule filter_reads:
         FQ = input_folder
     params:
         min_read_len = min_read_len,
+        max_read_len = max_read_len,
         min_mean_qual = min_mean_qual,
         filter_reads = filter_reads
     output:
