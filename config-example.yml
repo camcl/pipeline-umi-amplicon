@@ -1,14 +1,14 @@
 # Name of output folder
-sample_name: "sample"
+sample_name: example_egfr_single_read_run
 
 # Input FASTQ files. Can be a (zipped) FASTQ file or a folder containing (zipped) FASTQ files
-input_fastq: "file.fastq"
+input_fastq: data/example_egfr_single_cluster.fastq
 
 # Reference genome
-reference_fasta: "RefSeq_GRCh38.p14/GCA_000001405.15_GRCh38_no_alt_analysis_set_masked.fasta"
+reference_fasta: "data/example_egfr_reference.fasta"
 
 # BED file containing intervals with regions that are going to be analysed
-targets_bed: "file.bed"
+targets_bed: data/example_egfr_amplicon.bed
 
 
 ############################
@@ -19,10 +19,10 @@ targets_bed: "file.bed"
 umi_errors: 3
 
 # Min number of reads required for a consensus read
-min_reads_per_cluster: 5
+min_reads_per_cluster: 20
 
 # Max number of 1D used for a consensus read
-max_reads_per_cluster: 80
+max_reads_per_cluster: 60
 
 # Min overlap with target region
 min_overlap: 0.90
@@ -31,7 +31,7 @@ min_overlap: 0.90
 balance_strands: True
 
 # Medaka model used to compute consensus reads (default = "r1041_e82_400bps_sup_v4.3.0")
-medaka_model: "r1041_e82_400bps_sup_v4.3.0"
+medaka_model: "r941_min_high_g360"
 
 # Forward tail of primer (Ftail...UMI...primer)
 fwd_context: "GTATCGTGTAGAGACTGCGTAGG"
@@ -49,16 +49,13 @@ rev_umi: "AAABBBBAABBBBAABBBBAABBBBAAA"
 min_length: 40
 
 # Maximum combined UMI length
-max_length: 75
+max_length: 60
 
 # should the fastq reads be length and quality filtered?
 filter_reads: False
 
 # fastq min read length (if filter_reads is set to true)
-min_read_len: 2000
-
-# fastq min read length (if filter_reads is set to true)
-max_read_len: 4000
+min_read_len: 100
 
 # fastq min mean read quality score (if filter_reads is set to true)
 min_mean_qual: 70

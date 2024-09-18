@@ -47,6 +47,7 @@ min_length = config.get("min_length", 40)
 max_length = config.get("max_length", 60)
 filter_reads = config.get("filter_reads", False)
 min_read_len = config.get("min_read_len", 100)
+max_read_len = config.get("max_read_len", 5000)
 min_mean_qual = config.get("min_mean_qual", 70)
 varscan_params = config.get("varscan_params", '--variants 1 --output-vcf 1 --min-coverage 8 --min-avg-qual 0 --min-var-freq 0.01 --strand-filter 0 --p-value 1 --min-reads2 2')
 
@@ -120,7 +121,7 @@ rule filter_reads:
         
         if [[ {params.filter_reads} == "True" ]]
         then
-            filtlong --min_length {params.min_read_len} --min_mean_q {params.min_mean_qual} {input.FQ} | gzip > {output.FQ}
+            filtlong --min_length {params.min_read_len} --max_length {params.max_read_len} --min_mean_q {params.min_mean_qual} {input.FQ} | gzip > {output.FQ}
             printf 'Total reads in file post filtering: ' 2>&1 | tee {output.STATS}
             zcat {output.FQ} | echo $((`wc -l`/4)) 2>&1 | tee {output.STATS}
         else
