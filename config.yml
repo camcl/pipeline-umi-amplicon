@@ -1,14 +1,14 @@
 # Name of output folder
-sample_name: "sample"
+sample_name: "ARZ561_170c7ea3_err=3_minR=5_maxR=80"
 
 # Input FASTQ files. Can be a (zipped) FASTQ file or a folder containing (zipped) FASTQ files
-input_fastq: "file.fastq"
+input_fastq: "/beegfs-storage/projects/wp4/nobackup/workspace/camille_test/ampliconthemato/data/2777435/ARZ561_170c7ea3.fastq"
 
 # Reference genome
-reference_fasta: "RefSeq_GRCh38.p14/GCA_000001405.15_GRCh38_no_alt_analysis_set_masked.fasta"
+reference_fasta: "/data/ref_genomes/GRCh38/GCA_000001405.15/GCA_000001405.15_GRCh38_no_alt_analysis_set_masked.fasta"
 
 # BED file containing intervals with regions that are going to be analysed
-targets_bed: "file.bed"
+targets_bed: "/beegfs-storage/projects/wp4/nobackup/workspace/camille_test/ampliconthemato/data/primer_data/FLT3_3kb.bed"
 
 
 ############################
@@ -52,7 +52,7 @@ min_length: 40
 max_length: 75
 
 # should the fastq reads be length and quality filtered?
-filter_reads: False
+filter_reads: True
 
 # fastq min read length (if filter_reads is set to true)
 min_read_len: 2000

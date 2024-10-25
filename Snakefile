@@ -74,21 +74,21 @@ rule reads:
         expand("{name}/targets.bed", name=sample_name),
         expand("{name}/align/{target}_final.bam.bai", name=sample_name, target=target),
         expand("{name}/stats/{target}_vsearch_cluster_stats.tsv", name=sample_name, target=target),
-        expand("{name}/stats/{target}_consensus_size_vs_acc.tsv", name=sample_name, target=target)
+#       expand("{name}/stats/{target}_consensus_size_vs_acc.tsv", name=sample_name, target=target)
 
-rule variants:
-    input:
-        expand("{name}/variants/{target}_final.vcf.gz", name=sample_name, target=target)
+#rule variants:
+#    input:
+#        expand("{name}/variants/{target}_final.vcf.gz", name=sample_name, target=target)
 
 rule all:
     input:
         expand("{name}/targets.bed", name=sample_name),
         expand("{name}/align/{target}_final.bam.bai", name=sample_name, target=target),
         expand("{name}/stats/{target}_vsearch_cluster_stats.tsv", name=sample_name, target=target), 
-        expand("{name}/variants/{target}_final.vcf.gz", name=sample_name, target=target),
-        expand("{name}/variants/{target}_consensus.vcf.gz", name=sample_name, target=target),
-        expand("{name}/variants/{target}_d.vcf.gz", name=sample_name, target="1"),
-        expand("{name}/stats/{target}_consensus_size_vs_acc.tsv", name=sample_name, target=target),
+#        expand("{name}/variants/{target}_final.vcf.gz", name=sample_name, target=target),
+#        expand("{name}/variants/{target}_consensus.vcf.gz", name=sample_name, target=target),
+#        expand("{name}/variants/{target}_d.vcf.gz", name=sample_name, target="1"),
+#        expand("{name}/stats/{target}_consensus_size_vs_acc.tsv", name=sample_name, target=target),
 
 rule copy_bed:
     input:
@@ -110,7 +110,8 @@ rule filter_reads:
         FQ = "{name}/read.filt.fastq.gz",
         STATS = "{name}/stats/reads_stats.txt"
     container:
-    	"docker://nanozoo/filtlong"
+        # "docker://quay.io/biocontainers/filtlong:0.2.1--hdcf5f25_4"
+        ".snakemake/singularity/filtlong_0.2.1--hdcf5f25_4.sif"
     threads: 1
     shell:
         """
@@ -140,9 +141,10 @@ rule map_1d:
         read_number = subset_reads,
         minimap2_param = minimap2_param
     container:
-    	"docker://hydragenetics/minimap2:2.26"
+        # "docker://hydragenetics/minimap2:2.26"
+        ".snakemake/singularity/minimap2_2.26.sif"
     output:
-    	UBAM = temp("{name}/align/1_d.unsorted.bam")
+        UBAM = temp("{name}/align/1_d.unsorted.bam")
     threads: 30
     shell:
         """
@@ -150,20 +152,21 @@ rule map_1d:
         """
         
 rule sort_index_mapped_1d:
-	input:
-		UBAM = "{name}/align/1_d.unsorted.bam",
-		REF = reference_fasta
-	container:
-		"docker://hydragenetics/samtools:1.21"
-	output:
-		BAM = "{name}/align/1_d.bam",
-		BAI = "{name}/align/1_d.bam.bai"
-	threads: 30
-	shell:
-		"""
-		samtools sort -@ 5 -o {output.BAM} {input.UBAM}
-		samtools index -@ {threads} {output.BAM}
-		"""
+    input:
+        UBAM = "{name}/align/1_d.unsorted.bam",
+        REF = reference_fasta
+    container:
+        # "docker://hydragenetics/samtools:1.21"
+        ".snakemake/singularity/samtools_1.21.sif"
+    output:
+        BAM = "{name}/align/1_d.bam",
+        BAI = "{name}/align/1_d.bam.bai"
+    threads: 30
+    shell:
+        """
+        samtools sort -@ 5 -o {output.BAM} {input.UBAM}
+        samtools index -@ {threads} {output.BAM}
+        """
 
 # Split reads by amplicons
 rule split_reads:
@@ -190,7 +193,8 @@ rule map_consensus:
     params:
         minimap2_param = minimap2_param
     container:
-    	"docker://hydragenetics/minimap2:2.26"
+        # "docker://hydragenetics/minimap2:2.26"
+        ".snakemake/singularity/minimap2_2.26.sif"
     output:
         BAM = "{name}/align/{target}_{type}.bam",
         BAI = "{name}/align/{target}_{type}.bam.bai"
@@ -238,7 +242,8 @@ rule cluster:
         CONS = "{name}/clustering/{target}/clusters_consensus.fasta",
         DIR = directory("{name}/clustering/{target}/vsearch_clusters")
     container:
-    	"docker://tinalan/vsearch:2.28.1"
+        #"docker://tinalan/vsearch:2.28.1"
+        ".snakemake/singularity/vsearch_2.28.1.sif"
     params:
         min_length = min_length,
         max_length = max_length
@@ -255,7 +260,8 @@ rule cluster_consensus:
         CONS = "{name}/clustering_consensus/{target}/clusters_consensus.fasta",
         DIR = directory("{name}/clustering_consensus/{target}/vsearch_clusters")
     container:
-    	"docker://tinalan/vsearch:2.28.1"
+        #"docker://tinalan/vsearch:2.28.1"
+        ".snakemake/singularity/vsearch_2.28.1.sif"
     params:
         min_length = min_length,
         max_length = max_length
@@ -299,7 +305,8 @@ rule polish_clusters:
     params:
         medaka_model = mm
     container:
-    	"docker://ontresearch/medaka:v1.11.3"
+        # "docker://ontresearch/medaka:v1.11.3"
+        ".snakemake/singularity/medaka_v1.11.3.sif"
     threads: 30
     shell:
         """
